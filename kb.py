@@ -32,7 +32,9 @@ def main_ui():
     if submit_btn and q.strip():
         with st.spinner("Thinking locally..."):
             agent=invoke_agent()
+            print("before calling")
             response=asyncio.run(agent.invoke(q))
+            print("after calling")
         print(response)
         st.markdown("### Answer")
         st.write((response))

@@ -9,14 +9,7 @@ import asyncio
 # Initialize MCP server
 #mcp = FastMCP("PostgresServer")
 
-# PostgreSQL connection settings
-DB_CONFIG = {
-    "user": "db_user",          # replace with your username
-    "password": "uU~Pp!ih]2jPeq9!N5L4TMoz<3SJ", # replace with your password
-    "dbname": "postgres",   # replace with your database
-    "host": "analytics.cluster-cwly6uee6mq1.us-east-1.rds.amazonaws.com",
-    "port": 5432
-}
+
 
 def get_db_connection():
     return psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
@@ -180,12 +173,15 @@ def get_knowledge_base( user_query: str) -> str:
     # Create Bedrock Agent Runtime client
     client = boto3.client("bedrock-agent-runtime", region_name=REGION)
      
+    print("before invoke agent")
     response = client.invoke_agent(
                 agentId=AGENT_ID,
                 agentAliasId=AGENT_ALIAS_ID,
                 sessionId="streamlit-session",  # session can be static or dynamic
                 inputText=user_query
             )
+    print("after invoke agent")
+    print(response)
     for event in response["completion"]:
         if "chunk" in event:
             output_text += event["chunk"]["bytes"].decode("utf-8")
