@@ -1,3 +1,5 @@
 setuptools
 twine
 wheel
+psycopg2-binary
+streamlit
