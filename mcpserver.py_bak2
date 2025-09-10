@@ -17,7 +17,13 @@ import json
 
 
 # PostgreSQL connection settings
-
+DB_CONFIG = {
+    "user": "masteruser",          # replace with your username
+    "password": "w%>y&ZNyH%QFe#qp", # replace with your password
+    "dbname": "postgres",   # replace with your database
+    "host": "aurora-postgres-cluster.cluster-cwly6uee6mq1.us-east-1.rds.amazonaws.com",
+    "port": 5432
+}
 
 def get_db_connection():
     return psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
@@ -456,9 +462,8 @@ def order_items(order_id: int):
 # -------------------------
 # Analytics Query Tools
 # -------------------------
-from typing import Optional
 
-def top_customers_by_revenue(limit: int = 10, time_period: Optional[str] = None):
+def top_customers_by_revenue(limit: int = 10, time_period: str | None = None):
     """
     Retrieve the top customers ranked by total revenue generated within a time period.
 
@@ -501,7 +506,7 @@ def top_customers_by_revenue(limit: int = 10, time_period: Optional[str] = None)
         #     results.append(safe_row)
 
         # print("call complete")
-        return convertrowstostring(rows)   # Always returns a JSON-safe string
+        return json.dumps(convertrowstostring(rows))   # Always returns a JSON-safe string
     finally:
         cur.close()
         conn.close()

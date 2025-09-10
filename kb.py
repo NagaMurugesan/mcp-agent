@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 
 REGION = "us-east-1"
 AGENT_ID = "NDIOYYWRVL"       # The Bedrock Agent ID
-AGENT_ALIAS_ID = "TJ2SV1O9JH" # The alias for your agent
+AGENT_ALIAS_ID = "NWYFAEELRA" # The alias for your agent
 
 # Create Bedrock Agent Runtime client
 client = boto3.client("bedrock-agent-runtime", region_name=REGION)
@@ -18,7 +18,7 @@ client = boto3.client("bedrock-agent-runtime", region_name=REGION)
 # Streamlit app main function
 def main_ui():
     output_text = ""
-    response = ""
+    #response = ""
 
     # Query UI
     st.subheader("Ask a question")
@@ -68,7 +68,7 @@ with imcol2:
     st.image('image/default_logo.png')
 
 
-st.markdown("<p style='text-align: center; color: black; font-size:25px;'><span style='font-weight: bold'></span>Conversational AI with a Knowledge Base (FedBotics)</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: black; font-size:25px;'><span style='font-weight: bold'></span>Conversational AI with a Knowledge Base </p>", unsafe_allow_html=True)
 st.markdown("<hr style=height:2.5px;margin-top:0px;width:100%;background-color:#5480cb;>",unsafe_allow_html=True)
 
 
