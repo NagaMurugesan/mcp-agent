@@ -8,6 +8,7 @@ from psycopg2.extras import RealDictCursor
 #from mcp.server.fastmcp import FastMCP, Context
 from InlineAgent.agent import InlineAgent
 from InlineAgent.action_group import ActionGroup
+from performance import store_performance 
 
 import asyncio
 import json
@@ -16,14 +17,7 @@ import json
 #mcp = FastMCP("PostgresServer")
 
 
-# PostgreSQL connection settings
-DB_CONFIG = {
-    "user": "masteruser",          # replace with your username
-    "password": "w%>y&ZNyH%QFe#qp", # replace with your password
-    "dbname": "postgres",   # replace with your database
-    "host": "aurora-postgres-cluster.cluster-cwly6uee6mq1.us-east-1.rds.amazonaws.com",
-    "port": 5432
-}
+
 
 def get_db_connection():
     return psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
@@ -909,7 +903,7 @@ def  invoke_agent():
     analytics_action_group = ActionGroup(
         name="Analytics",
         description="This action group provides analytical queries such as top customers, sales by category, daily trends, and product sales rank.",
-        tools=[top_customers_by_revenue, sales_by_category, daily_sales_trend, sales_by_store, product_sales_rank]
+        tools=[top_customers_by_revenue, sales_by_category, daily_sales_trend, store_performance, product_sales_rank]
     )
 
     # Metadata / Introspection Action Group
