@@ -7,6 +7,7 @@ import html
 st.set_page_config(layout="wide")
 import pandas as pd
 import matplotlib.pyplot as plt
+import json
 
 REGION = "us-east-1"
 AGENT_ID = "NDIOYYWRVL"       # The Bedrock Agent ID
@@ -44,16 +45,23 @@ def main_ui():
         submit_btn = st.form_submit_button("Ask")
     print(q)
     if submit_btn and q.strip():
-        with st.spinner("Thinking locally..."):
-            agent=invoke_agent()
-            print("before calling")
-            response=asyncio.run(agent.invoke(q))
-            print("after calling")
-        df = pd.DataFrame(data)
-        plot_bar(df, "store_name", "store_sales", "Store Performance by Revenue")
-        
-        #st.markdown("### Answer")
-        #st.text((response))
+        try:
+            with st.spinner("Thinking locally..."):
+                agent=invoke_agent()
+                print("before calling")
+                response=asyncio.run(agent.invoke(q))
+                print("after calling")
+            # j1=json.loads(response)
+            # print(j1)
+        except BaseException as e:
+            print("An error occurred")
+            print(e)
+
+        # df = pd.DataFrame(j1)
+        # #plot_bar(df, "store_name", "store_sales", "Store Performance by Revenue")
+        # print(type(response))
+        st.markdown("### Answer")
+        st.markdown((response))
 
         #render_sources(response)
 

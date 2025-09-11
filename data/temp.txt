@@ -1,0 +1,95 @@
+# charts_mcp.py
+from mcp.server.fastmcp import FastMCP
+from typing import Dict, Any, List
+import psycopg2
+import pandas as pd
+
+app = FastMCP("charts-mcp")
+
+# --- Database connection setup ---
+def get_connection():
+    return psycopg2.connect(
+        host="aurora-postgres-cluster.cluster-cwly6uee6mq1.us-east-1.rds.amazonaws.com",   # update with your DB details
+        dbname="postgres",
+        user="masteruser",
+        password="w%>y&ZNyH%QFe#qp",
+        port=5432
+         
+    )
+
+def run_query(query: str) -> pd.DataFrame:
+    conn = get_connection()
+    df = pd.read_sql(query, conn)
+    conn.close()
+    return df
+
+# --- MCP endpoints for charts ---
+@app.tool()
+def top_customers() -> List[Dict[str, Any]]:
+    """Top customers by total sales revenue"""
+    query = """
+    SELECT c.customer_name,
+           SUM(fs.total_amount) AS total_sales
+    FROM fact_sales fs
+    JOIN dim_customer c ON fs.customer_id = c.customer_id
+    GROUP BY c.customer_name
+    ORDER BY total_sales DESC
+    LIMIT 10;
+    """
+    return run_query(query).to_dict(orient="records")
+
+@app.tool()
+def top_products() -> List[Dict[str, Any]]:
+    """Top products by quantity sold"""
+    query = """
+    SELECT p.product_name,
+           SUM(foi.quantity) AS total_quantity
+    FROM fact_order_items foi
+    JOIN dim_product p ON foi.product_id = p.product_id
+    GROUP BY p.product_name
+    ORDER BY total_quantity DESC
+    LIMIT 10;
+    """
+    return run_query(query).to_dict(orient="records")
+
+@app.tool()
+def monthly_sales() -> List[Dict[str, Any]]:
+    """Monthly sales revenue trend"""
+    query = """
+    SELECT d.year,
+           d.month,
+           SUM(fs.total_amount) AS total_sales
+    FROM fact_sales fs
+    JOIN dim_date d ON fs.date_id = d.date_id
+    GROUP BY d.year, d.month
+    ORDER BY d.year, d.month;
+    """
+    return run_query(query).to_dict(orient="records")
+
+@app.tool()
+def store_performance() -> List[Dict[str, Any]]:
+    """Revenue by store"""
+    query = """
+    SELECT s.store_name,
+           SUM(fs.total_amount) AS store_sales
+    FROM fact_sales fs
+    JOIN dim_store s ON fs.store_id = s.store_id
+    GROUP BY s.store_name
+    ORDER BY store_sales DESC;
+    """
+    return run_query(query).to_dict(orient="records")
+
+@app.tool()
+def order_status_distribution() -> List[Dict[str, Any]]:
+    """Distribution of orders by status"""
+    query = """
+    SELECT order_status,
+           COUNT(*) AS order_count
+    FROM fact_orders
+    GROUP BY order_status
+    ORDER BY order_count DESC;
+    """
+    return run_query(query).to_dict(orient="records")
+
+if __name__ == "__main__":
+    app.run()

@@ -7,7 +7,6 @@ import html
 st.set_page_config(layout="wide")
 import pandas as pd
 import matplotlib.pyplot as plt
-import json
 
 REGION = "us-east-1"
 AGENT_ID = "NDIOYYWRVL"       # The Bedrock Agent ID
@@ -45,23 +44,30 @@ def main_ui():
         submit_btn = st.form_submit_button("Ask")
     print(q)
     if submit_btn and q.strip():
-        try:
-            with st.spinner("Thinking locally..."):
-                agent=invoke_agent()
-                print("before calling")
-                response=asyncio.run(agent.invoke(q))
-                print("after calling")
-            # j1=json.loads(response)
-            # print(j1)
-        except BaseException as e:
-            print("An error occurred")
-            print(e)
-
-        # df = pd.DataFrame(j1)
-        # #plot_bar(df, "store_name", "store_sales", "Store Performance by Revenue")
-        # print(type(response))
+        with st.spinner("Thinking locally..."):
+            agent=invoke_agent()
+            print("before calling")
+            response=asyncio.run(agent.invoke(q))
+            print("after calling")
+        #df = pd.DataFrame(data)
+        #plot_bar(df, "store_name", "store_sales", "Store Performance by Revenue")
+        
+        # # Check if the response contains an image
+        # if isinstance(response, dict) and response.get("type") == "image":
+        #     image_bytes = base64.b64decode(response["data"])
+        #     st.image(image_bytes)
+        # else:
+        #     # Otherwise render text as usual
+        #     st.markdown("### Answer")
+        #     st.markdown(response)
+        print(response)
         st.markdown("### Answer")
-        st.markdown((response))
+        st.markdown(response)
+        #st.image("/home/ec2-user/img/nova_canvas.png",caption="Chart",use_column_width=True)
+
+            
+        #st.markdown("### Answer")
+        #st.markdown((response))
 
         #render_sources(response)
 

@@ -16,6 +16,14 @@ import json
 # Initialize MCP server
 #mcp = FastMCP("PostgresServer")
 
+# PostgreSQL connection settings
+DB_CONFIG = {
+    "user": "masteruser",          # replace with your username
+    "password": "w%>y&ZNyH%QFe#qp", # replace with your password
+    "dbname": "postgres",   # replace with your database
+    "host": "aurora-postgres-cluster.cluster-cwly6uee6mq1.us-east-1.rds.amazonaws.com",
+    "port": 5432
+}
 
 
 
